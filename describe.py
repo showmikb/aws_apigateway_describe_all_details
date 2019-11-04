@@ -5,15 +5,18 @@ import pandas
 
 
 class DescribeApis:
+    def noparam(self):
+        self.region="us-east-1"
+        session = boto3.Session(profile_name='default')
 
-    def __init__(self, region, a_key, s_key):
+    def parameterized(self, region, a_key, s_key):
         self.region = region
         self.access_key = a_key
         self.secret_access_key = s_key
-
-    def createClient(self):
         session = boto3.setup_default_session(aws_access_key_id=self.access_key,
                                               aws_secret_access_key=self.secret_access_key)
+
+    def createClient(self):
         self.client = boto3.client('apigateway', self.region)
 
     def getAllApis(self):
@@ -103,12 +106,14 @@ if __name__ == '__main__':
     print("Please enter the following information to proceed forward :")
     a_key = input("Enter Access Key")
     if not a_key:
-        print("Sorry incorrect input, exiting ...")
-    s_key = input("Enter Secret Access Key")
-    if not a_key:
-        print("Sorry incorrect input, exiting ...")
-    region = input("Enter Region")
-    if not region:
-        print("Sorry incorrect input, exiting ...")
-    api_obj = DescribeApis(region, a_key, s_key)
+        print("Using Default ...")
+        api_obj = DescribeApis()
+        api_obj.noparam()
+
+    else:
+        s_key = input("Enter Secret Access Key")
+        region = input("Enter Region")
+        api_obj = DescribeApis()
+        api_obj.parameterized(region, a_key, s_key)
+
     api_obj.get_result()
